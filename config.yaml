@@ -1,0 +1,26 @@
+request:
+  base_url: "https://sunsetbot.top/"
+
+# Server酱微信推送
+push:
+  enable: true
+  sckey: "" #"你的Server酱SCKEY"
+
+schedule:
+  city: "广东省-广州"
+  send_wechat_test_on_start: false # 是否在启动的时候推送测试通知
+  # 朝霞
+  morning:  
+    enable: true
+    quality: 0.5 # 质量
+    time: ["18:00","23:00"] # 多个时间用英文逗号隔开
+    model: ["GFS","EC"] #"GFS","EC"  多个模式用英文逗号隔开
+  
+  # 晚霞
+  evening: 
+    enable: true
+    quality: 0.5
+    time: ["11:00", "16:00"]
+    model: ["GFS","EC"] 
+ 
+
