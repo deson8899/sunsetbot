@@ -1,0 +1,19 @@
+services:
+  sunsetbot:
+    container_name: sunsetbot
+    hostname: sunsetbot
+    image:  sunsetbot:1.0.3
+    logging:
+      driver: "json-file"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - /data/Docker/sunsetbot/config/config.yaml:/app/config.yaml #根据实际情况配置映射路径
+    deploy:
+      resources:
+         limits:
+            cpus: "1.00"
+            memory: 1G
+         reservations:
+            memory: 200M
+    restart: unless-stopped

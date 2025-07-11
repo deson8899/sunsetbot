@@ -1,5 +1,5 @@
 request:
-  base_url: "https://sunsetbot.top/"
+  base_url: "https://sunsetbot.top/" #不用动
 
 # Server酱微信推送
 push:
@@ -9,6 +9,7 @@ push:
 schedule:
   city: "广东省-广州"
   send_wechat_test_on_start: false # 是否在启动的时候推送测试通知
+  push_error: false # 请求错误是否推送到微信
   # 朝霞
   morning:  
     enable: true

@@ -90,6 +90,7 @@ def fetch_data(is_morning):
     pushStr = ""
     allUrl = urls.keys()
     for url in allUrl:
+        # print(f"[{datetime.datetime.now()}] 请求地址: {url}")
         value = requestUrl(url, target_quality)
         if len(value) > 0:
             if is_morning:
@@ -98,11 +99,14 @@ def fetch_data(is_morning):
                 pushStr += eventStr
             pushStr += value
             pushStr += f"模式：{urls[url]}\n\n"
+        time.sleep(5) # 尝试 延迟1s执行，防止同一时间请求量过大导致请求失败
 
 
-    print(f"[{datetime.datetime.now()}] 请求地址: {url}")
+    
     if len(pushStr) > 0:
         send_wechat_notification(eventStr, pushStr)
+    else:
+        print(f"[推送]没有符合条件")
 
 def requestUrl(url, target_quality):
     # print(f"[{datetime.datetime.now()}] 请求地址: {url}")
@@ -112,8 +116,7 @@ def requestUrl(url, target_quality):
         content = response.text
         json_content = json.loads(content)
         
-        print(f"请求地址: {url}\n[成功] 获取数据: {content}")
-      
+        print(f"{datetime.datetime.now()}请求地址: {url}\n[成功] 获取数据: {content}")
       
         numberPattern = r'\d+\.\d+'
         quality = json_content['tb_quality'] # 概率(质量)
@@ -141,7 +144,10 @@ def requestUrl(url, target_quality):
         return pushStr
     except Exception as e:
         print(f"请求地址: {url}\n[失败] 请求异常: {e}")
-        return "[失败] 请求地址: {url}\n"
+        if  CONFIG["schedule"]["push_error"] == True:
+            return f"[失败] 请求地址: {e}\n"
+        else:
+            return ""
         # send_wechat_notification("数据请求失败", str(e))
 
 
@@ -203,7 +209,7 @@ def main():
             print(f"[启动] 晚霞任务将每天 {run_time} 执行")
             schedule.every().day.at(str(run_time).strip()).do(fetch_data, False)
 
-    print(f"[启动] 朝霞任务：{morning_task_enable} 晚霞任务：{evening_task_enable}  微信通知: {push_enable}")
+    print(f"[启动] 朝霞任务：{morning_task_enable} 晚霞任务：{evening_task_enable}  微信通知: {push_enable} 推送异常：{CONFIG["schedule"]["push_error"]}")
 
     # 发送测试微信推送
     if send_wechat_test_on_start:
@@ -214,7 +220,7 @@ def main():
         schedule.run_pending()
         time.sleep(1)
 
-    # fetch_data(True)
+    # fetch_data(False)
 
 if __name__ == "__main__":
     main()
